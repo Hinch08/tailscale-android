@@ -21,11 +21,6 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Set up Android SDK & NDK
-        uses: android-actions/setup-android@v3
-        with:
-          ndk-version: '23.1.7779620' # Installs the precise native tools needed for Go
-
       - name: Compile Go into Android Library (.aar)
         run: ./gradlew :libtailscale:assembleRelease
 
