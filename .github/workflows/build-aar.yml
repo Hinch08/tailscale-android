@@ -21,16 +21,12 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Unlock Android Build Tools
-        run: chmod +x gradlew
+      - name: Set up Android SDK Environments
+        uses: android-actions/setup-android@v3
 
-      - name: Compile Go into Android Library (.aar)
-        run: ./gradlew :libtailscale:assembleRelease
-
-      - name: Save and Upload Completed Archive
-        uses: actions/upload-artifact@v4
-        with:
-          name: libtailscale-release
-          path: ./**/build/outputs/aar/*.aar
+      - name: Force Execute Android Native Compilation
+        run: |
+          chmod +x gradlew
+          gradle :libtailscale:assembleRelease
 
 
