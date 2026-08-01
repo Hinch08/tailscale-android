@@ -21,12 +21,27 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Set up Android SDK Environments
+      - name: Set up Android SDK & NDK
         uses: android-actions/setup-android@v3
 
-      - name: Force Execute Android Native Compilation
+      - name: Install Android NDK Components
         run: |
-          chmod +x gradlew
-          gradle :libtailscale:assembleRelease
+          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;23.1.7779620"
+
+      - name: Install Go Mobile Bind Tools
+        run: |
+          go install golang.org/x/mobile/cmd/gomobile@latest
+          gomobile init
+
+      - name: Compile Library via Native Makefile
+        run: |
+          export ANDROID_NDK_HOME="${ANDROID_HOME}/ndk/23.1.7779620"
+          make libtailscale
+
+      - name: Save and Upload Completed Archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: libtailscale-release
+          path: ./**/build/outputs/aar/*.aar
 
 
